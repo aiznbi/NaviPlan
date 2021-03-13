@@ -30,6 +30,7 @@ def shortest_path(graph, start, goal):
 def in_out():
     mb.askquestion(title="Выбор")
 
+# господи как пользоваться гитхабом
 
 tk = Tk()
 # загрузка img
