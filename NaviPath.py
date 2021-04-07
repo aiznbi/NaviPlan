@@ -36,10 +36,10 @@ tk = Tk()
 # загрузка img
 canvas = Canvas(tk, width=tk.winfo_screenwidth(), height=tk.winfo_screenheight(), bg='white')
 canvas.pack(expand=YES, fill=BOTH)
-self.image = ImageTk.PhotoImage(file="plan.gif")
-point_img = round(tk.winfo_screenwidth() / 2 - self.image.width() / 2)
-canvas.create_image(tk.winfo_screenwidth() / 2 - self.image.width() / 2, 0, image=self.image, anchor=NW)
-canvas.create_line(0, self.image.height(), tk.winfo_screenwidth(), self.image.height())
+image = ImageTk.PhotoImage(file="plan.gif")
+point_img = round(tk.winfo_screenwidth() / 2 - image.width() / 2)
+canvas.create_image(tk.winfo_screenwidth() / 2 - image.width() / 2, 0, image=image, anchor=NW)
+canvas.create_line(0, image.height(), tk.winfo_screenwidth(), image.height())
 with open("graph.json", "r") as read_file:
     graph = json.load(read_file)
 with open("edges.json", "r") as read_file:

@@ -112,17 +112,17 @@ tk = Tk()
 # загрузка img
 canvas = Canvas(tk, width=tk.winfo_screenwidth(), height=tk.winfo_screenheight(), bg='white')
 canvas.pack(expand=YES, fill=BOTH)
-self.image = ImageTk.PhotoImage(file="plan.gif")
-point_img = round(tk.winfo_screenwidth() / 2 - self.image.width() / 2)
-canvas.create_image(tk.winfo_screenwidth() / 2 - self.image.width() / 2, 0, image=self.image, anchor=NW)
-canvas.create_line(0, self.image.height(), tk.winfo_screenwidth(), self.image.height())
+image = ImageTk.PhotoImage(file="plan.gif")
+point_img = round(tk.winfo_screenwidth() / 2 - image.width() / 2)
+canvas.create_image(tk.winfo_screenwidth() / 2 - image.width() / 2, 0, image=image, anchor=NW)
+canvas.create_line(0, image.height(), tk.winfo_screenwidth(), image.height())
 # кнопки для коридоров
 addNewHall = Button(tk, text="Добавить коридор", command=add_new_hall, font=("Times New Roman", 16))
-addNewHall.place(x=tk.winfo_screenwidth() / 4, y=self.image.height() + 2)
+addNewHall.place(x=tk.winfo_screenwidth() / 4, y=image.height() + 2)
 addNewHallExit = Button(tk, text="Завершить добавление коридора", command=exit_anh, font=("Times New Roman", 16))
-addNewHallExit.place(x=tk.winfo_screenwidth() / 4, y=self.image.height() + 43)
+addNewHallExit.place(x=tk.winfo_screenwidth() / 4, y=image.height() + 43)
 ExitHalls = Button(tk, text="Загрузить коридоры", command=load_halls, font=("Times New Roman", 16))
-ExitHalls.place(x=tk.winfo_screenwidth() / 4, y=self.image.height() + 84)
+ExitHalls.place(x=tk.winfo_screenwidth() / 4, y=image.height() + 84)
 
 # выгрузка коридоров
 with open("edges.json", "r") as read_file:
@@ -158,22 +158,22 @@ extender = []
 
 # кнопки для аудиторий
 room_name = StringVar()
-canvas.create_text(tk.winfo_screenwidth() / 2, self.image.height() + 10, text="Название аудитории",
+canvas.create_text(tk.winfo_screenwidth() / 2, image.height() + 10, text="Название аудитории",
                    font=("Times New Roman", 16))
 txt = Entry(tk, width=15, font=("Times New Roman", 16), bd=3, bg="#bbbbbb", justify=CENTER, textvariable=room_name)
-txt.place(x=tk.winfo_screenwidth() / 2 - 85, y=self.image.height() + 25)
+txt.place(x=tk.winfo_screenwidth() / 2 - 85, y=image.height() + 25)
 addNewRoom = Button(tk, text="Добавить", command=add_new_room, font=("Times New Roman", 16))
-addNewRoom.place(x=tk.winfo_screenwidth() / 2 - 110, y=self.image.height() + 55)
+addNewRoom.place(x=tk.winfo_screenwidth() / 2 - 110, y=image.height() + 55)
 addNewRoomExit = Button(tk, text="Завершить", command=exit_anr, font=("Times New Roman", 16))
-addNewRoomExit.place(x=tk.winfo_screenwidth() / 2, y=self.image.height() + 55)
+addNewRoomExit.place(x=tk.winfo_screenwidth() / 2, y=image.height() + 55)
 ExitRooms = Button(tk, text="Загрузить аудитории", command=load_rooms, font=("Times New Roman", 16))
-ExitRooms.place(x=tk.winfo_screenwidth() / 2 - 98, y=self.image.height() + 95)
+ExitRooms.place(x=tk.winfo_screenwidth() / 2 - 98, y=image.height() + 95)
 # костыль для смежных коридоров
 hall_name = StringVar()
-canvas.create_text(tk.winfo_screenwidth() / 2 + 225, self.image.height() + 10, text="Смежный коридор",
+canvas.create_text(tk.winfo_screenwidth() / 2 + 225, image.height() + 10, text="Смежный коридор",
                    font=("Times New Roman", 16))
 text = Entry(tk, width=8, font=("Times New Roman", 16), bd=3, bg="#bbbbbb", justify=CENTER, textvariable=hall_name)
-text.place(x=tk.winfo_screenwidth() / 2 + 180, y=self.image.height() + 25)
+text.place(x=tk.winfo_screenwidth() / 2 + 180, y=image.height() + 25)
 addHall = Button(tk, text="Добавить", command=addHall, font=("Times New Roman", 16))
-addHall.place(x=tk.winfo_screenwidth() / 2 + 175, y=self.image.height() + 55)
+addHall.place(x=tk.winfo_screenwidth() / 2 + 175, y=image.height() + 55)
 tk.mainloop()
