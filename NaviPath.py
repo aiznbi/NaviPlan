@@ -23,6 +23,23 @@ def shortest_path(graph, start, goal):
         return None
 
 
+def callback(*args):
+    edges_cop = edges.copy()
+    vertex_cop = vertex.copy()
+    if var_from.get() != 'Откуда' and var_where.get() != 'Куда':
+        way = []
+        path = shortest_path(graph, var_from.get(), var_where.get())
+        for i in path:
+            if edges_cop.get(i) is None:
+                way.append(vertex_cop.get(i))
+            else:
+                way.append(edges_cop.get(i))
+        for i in way:
+            i[0] += point_img
+        for i in range(len(way) - 1):
+            canvas.create_line(way[i], way[i + 1], width=5, fill="blue")
+
+
 tk = Tk()
 # загрузка img
 canvas = Canvas(tk, width=tk.winfo_screenwidth(), height=tk.winfo_screenheight(), bg='white')
@@ -52,25 +69,15 @@ var_from.set("Откуда")
 opt_from = OptionMenu(tk, var_from, *OptList_from)
 opt_from.config(width=15, font=('Times New Roman', 20))
 opt_from.update()
-opt_from.place(x=tk.winfo_screenwidth()/2-opt_from.winfo_reqwidth(), y=image.height() + 5)
+opt_from.place(x=tk.winfo_screenwidth() / 2 - opt_from.winfo_reqwidth(), y=image.height() + 5)
+var_from.trace("w", callback)
 var_where = StringVar(tk)
 var_where.set("Куда")
 opt_where = OptionMenu(tk, var_where, *OptList_where)
 opt_where.config(width=15, font=('Times New Roman', 20))
-opt_where.place(x=tk.winfo_screenwidth()/2, y=image.height() + 5)
-"""path = shortest_path(graph, "102", "103")
-way = []
-for i in path:
-    if edges.get(i) is None:
-        way.append(vertex.get(i))
-    else:
-        way.append(edges.get(i))
-for i in way:
-    i[0] += point_img
-canvas.create_oval(way[0][0] - 20, way[0][1] - 20, way[0][0] + 20, way[0][1] + 20, fill="green")
+opt_where.place(x=tk.winfo_screenwidth() / 2, y=image.height() + 5)
+var_where.trace("w", callback)
+"""canvas.create_oval(way[0][0] - 20, way[0][1] - 20, way[0][0] + 20, way[0][1] + 20, fill="green")
 canvas.create_oval(way[len(way) - 1][0] - 20, way[len(way) - 1][1] - 20, way[len(way) - 1][0] + 20,
-                   way[len(way) - 1][1] + 20, fill="red")
-for i in range(len(way) - 1):
-    canvas.create_line(way[i], way[i + 1], width=5, fill="blue")
-"""
+                   way[len(way) - 1][1] + 20, fill="red")"""
 tk.mainloop()
