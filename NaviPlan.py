@@ -1,8 +1,7 @@
-from tkinter import *
-import tkinter.messagebox as mb
 import json
-import self as self
-from PIL import ImageTk, Image
+import tkinter.messagebox as mb
+from tkinter import *
+from PIL import ImageTk
 
 graph = {}
 extender = []
