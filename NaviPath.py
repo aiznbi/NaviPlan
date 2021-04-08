@@ -1,7 +1,7 @@
 import json
 from collections import deque
-import tkinter.messagebox as mb
 from tkinter import *
+import copy
 from PIL import ImageTk
 
 
@@ -23,21 +23,31 @@ def shortest_path(graph, start, goal):
         return None
 
 
+way = []
+
+
+def root(mas):
+    for i in range(len(way) - 1):
+        canvas.create_line(way[i], way[i + 1], width=5, fill="white")
+    vertex_cop = copy.deepcopy(vertex)
+    edges_cop = copy.deepcopy(edges)
+    path = shortest_path(graph, mas[0], mas[1])
+    way.clear()
+    for i in path:
+        if edges_cop.get(i) is None:
+            way.append(vertex_cop.get(i))
+        else:
+            way.append(edges_cop.get(i))
+    for i in way:
+        i[0] += point_img
+    for i in range(len(way) - 1):
+        canvas.create_line(way[i], way[i + 1], width=5, fill="blue")
+
+
 def callback(*args):
-    edges_cop = edges.copy()
-    vertex_cop = vertex.copy()
     if var_from.get() != 'Откуда' and var_where.get() != 'Куда':
-        way = []
-        path = shortest_path(graph, var_from.get(), var_where.get())
-        for i in path:
-            if edges_cop.get(i) is None:
-                way.append(vertex_cop.get(i))
-            else:
-                way.append(edges_cop.get(i))
-        for i in way:
-            i[0] += point_img
-        for i in range(len(way) - 1):
-            canvas.create_line(way[i], way[i + 1], width=5, fill="blue")
+        for_root = var_from.get(), var_where.get()
+        root(for_root)
 
 
 tk = Tk()
