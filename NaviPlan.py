@@ -1,5 +1,6 @@
 import json
 import tkinter.messagebox as mb
+import tkinter.simpledialog as dg
 from tkinter import *
 from PIL import ImageTk
 
@@ -56,7 +57,7 @@ def load_halls():
     if exitHalls:
         # кнопки коридоров
         for hall in edges:
-            Button(tk, text=hall, activebackground="blue", font=("Times New Roman", 14)).place(
+            Button(tk, text=hall, activebackground="blue", comand=widname, font=("Times New Roman", 14)).place(
                 x=edges[hall][0] + point_img - 15, y=edges[hall][1] - 15)
         edge.clear()
 
@@ -66,10 +67,18 @@ def add_new_room():
     ANR = mb.askokcancel(title="Аудитория",
                          message="Выберите аудиторию, затем смежные коридоры")
     if ANR:
-        graph[room_name.get()] = []
         canvas.bind("<Button-1>", on_click_room)
     else:
         canvas.bind("<Button-1>", NONE)
+
+
+def auditname():
+    txt = dg.askstring(title='Название аудитории', prompt='Введите название аудитории')
+    return txt
+
+
+def widname():
+    print(['text'])
 
 
 # аудиторные вершины
@@ -77,16 +86,21 @@ def on_click_room(event):
     mouse_x = canvas.winfo_pointerx() - canvas.winfo_rootx()
     mouse_y = canvas.winfo_pointery() - canvas.winfo_rooty()
     cords = [mouse_x - point_img, mouse_y]
-    edge[txt.get()] = cords
+    canvas.bind("<Button-1>", NONE)
     canvas.create_oval(mouse_x - 10, mouse_y - 10, mouse_x + 10, mouse_y + 10, fill="red", width=2)
+    txt = auditname()
+    canvas.bind("<Button-1>", widname)
+    graph[txt] = []
+    edge[txt] = cords
+
 
 
 # разбинд клика
-def exit_anr():
+"""def exit_anr():
     exitANH = mb.askokcancel(title="Операция завершена",
                              message="Аудитория добавлена")
     canvas.bind("<Button-1>", NONE)
-    room_name.set("")
+    room_name.set("")"""
 
 
 # загрузка аудиторий в json
@@ -156,13 +170,9 @@ extender = []
 # конец костыля!
 
 # кнопки для аудиторий
-room_name = StringVar()
-canvas.create_text(tk.winfo_screenwidth() / 2, image.height() + 10, text="Название аудитории",
-                   font=("Times New Roman", 16))
-txt = Entry(tk, width=15, font=("Times New Roman", 16), bd=3, bg="#bbbbbb", justify=CENTER, textvariable=room_name)
-txt.place(x=tk.winfo_screenwidth() / 2 - 85, y=image.height() + 25)
-addNewRoom = Button(tk, text="Добавить", command=add_new_room, font=("Times New Roman", 16))
-addNewRoom.place(x=tk.winfo_screenwidth() / 2 - 110, y=image.height() + 55)
+addNewRoom = Button(tk, text="Добавить аудиторию", command=add_new_room, font=("Times New Roman", 16))
+addNewRoom.place(x=tk.winfo_screenwidth() / 2, y=image.height() + 2)
+"""
 addNewRoomExit = Button(tk, text="Завершить", command=exit_anr, font=("Times New Roman", 16))
 addNewRoomExit.place(x=tk.winfo_screenwidth() / 2, y=image.height() + 55)
 ExitRooms = Button(tk, text="Загрузить аудитории", command=load_rooms, font=("Times New Roman", 16))
@@ -173,6 +183,5 @@ canvas.create_text(tk.winfo_screenwidth() / 2 + 225, image.height() + 10, text="
                    font=("Times New Roman", 16))
 text = Entry(tk, width=8, font=("Times New Roman", 16), bd=3, bg="#bbbbbb", justify=CENTER, textvariable=hall_name)
 text.place(x=tk.winfo_screenwidth() / 2 + 180, y=image.height() + 25)
-addHall = Button(tk, text="Добавить", command=addHall, font=("Times New Roman", 16))
-addHall.place(x=tk.winfo_screenwidth() / 2 + 175, y=image.height() + 55)
+"""
 tk.mainloop()
