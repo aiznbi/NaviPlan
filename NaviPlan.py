@@ -6,6 +6,7 @@ from PIL import ImageTk
 
 graph = {}
 extender = []
+buttons_dict = {}
 
 # лист пары координат точки
 cords = []
@@ -48,6 +49,10 @@ def exit_anh():
     canvas.bind("<Button-1>", NONE)
 
 
+def widname(txt):
+    print("hall={}".format(txt))
+
+
 # загрузка коридоров в json
 def load_halls():
     with open("edges.json", "w") as write_file:
@@ -57,10 +62,10 @@ def load_halls():
     if exitHalls:
         # кнопки коридоров
         for hall in edges:
-            Button(tk, text=hall, activebackground="blue", comand=widname, font=("Times New Roman", 14)).place(
-                x=edges[hall][0] + point_img - 15, y=edges[hall][1] - 15)
+            buttons_dict[hall] = Button(tk, text=hall, font=("Times New Roman", 14))
+            buttons_dict[hall]['command'] = lambda txt=hall: widname(txt)
+            buttons_dict[hall].place(x=edges[hall][0] + point_img - 15, y=edges[hall][1] - 15)
         edge.clear()
-
 
 # бинд клика на аудиторию
 def add_new_room():
@@ -77,10 +82,6 @@ def auditname():
     return txt
 
 
-def widname():
-    print(['text'])
-
-
 # аудиторные вершины
 def on_click_room(event):
     mouse_x = canvas.winfo_pointerx() - canvas.winfo_rootx()
@@ -89,7 +90,6 @@ def on_click_room(event):
     canvas.bind("<Button-1>", NONE)
     canvas.create_oval(mouse_x - 10, mouse_y - 10, mouse_x + 10, mouse_y + 10, fill="red", width=2)
     txt = auditname()
-    canvas.bind("<Button-1>", widname)
     graph[txt] = []
     edge[txt] = cords
 
