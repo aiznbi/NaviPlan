@@ -87,7 +87,4 @@ opt_where = OptionMenu(tk, var_where, *OptList_where)
 opt_where.config(width=15, font=('Times New Roman', 20))
 opt_where.place(x=tk.winfo_screenwidth() / 2, y=image.height() + 5)
 var_where.trace("w", callback)
-"""canvas.create_oval(way[0][0] - 20, way[0][1] - 20, way[0][0] + 20, way[0][1] + 20, fill="green")
-canvas.create_oval(way[len(way) - 1][0] - 20, way[len(way) - 1][1] - 20, way[len(way) - 1][0] + 20,
-                   way[len(way) - 1][1] + 20, fill="red")"""
 tk.mainloop()

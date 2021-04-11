@@ -13,6 +13,7 @@ cords = []
 # лист ребер для json
 edge = {}
 global i, j
+global hall_name, room_name
 i = 0
 j = 0
 
@@ -49,8 +50,15 @@ def exit_anh():
     canvas.bind("<Button-1>", NONE)
 
 
+def exit_anr():
+    exitANR = mb.askokcancel(title="Операция завершена",
+                             message="Аудитория добавлена")
+
+
 def widname(txt):
-    print("hall={}".format(txt))
+    global room_name
+    graph[txt].append(room_name)
+    graph[room_name].append(txt)
 
 
 # загрузка коридоров в json
@@ -61,11 +69,12 @@ def load_halls():
                                message="Коридоры загружены")
     if exitHalls:
         # кнопки коридоров
-        for hall in edges:
+        for hall in edge:
             buttons_dict[hall] = Button(tk, text=hall, font=("Times New Roman", 14))
             buttons_dict[hall]['command'] = lambda txt=hall: widname(txt)
-            buttons_dict[hall].place(x=edges[hall][0] + point_img - 15, y=edges[hall][1] - 15)
-        edge.clear()
+            buttons_dict[hall].place(x=edge[hall][0] + point_img - 15, y=edge[hall][1] - 15)
+    edge.clear()
+
 
 # бинд клика на аудиторию
 def add_new_room():
@@ -77,9 +86,9 @@ def add_new_room():
         canvas.bind("<Button-1>", NONE)
 
 
-def auditname():
-    txt = dg.askstring(title='Название аудитории', prompt='Введите название аудитории')
-    return txt
+def roomname():
+    global room_name
+    room_name = dg.askstring(title='Название аудитории', prompt='Введите название аудитории')
 
 
 # аудиторные вершины
@@ -89,18 +98,10 @@ def on_click_room(event):
     cords = [mouse_x - point_img, mouse_y]
     canvas.bind("<Button-1>", NONE)
     canvas.create_oval(mouse_x - 10, mouse_y - 10, mouse_x + 10, mouse_y + 10, fill="red", width=2)
-    txt = auditname()
-    graph[txt] = []
-    edge[txt] = cords
-
-
-
-# разбинд клика
-"""def exit_anr():
-    exitANH = mb.askokcancel(title="Операция завершена",
-                             message="Аудитория добавлена")
-    canvas.bind("<Button-1>", NONE)
-    room_name.set("")"""
+    roomname()
+    global room_name
+    graph[room_name] = []
+    edge[room_name] = cords
 
 
 # загрузка аудиторий в json
@@ -111,14 +112,6 @@ def load_rooms():
                                message="Аудитории загружены")
     with open("graph.json", 'w') as write_file:
         json.dump(graph, write_file)
-    tk.destroy()
-
-
-# функция для коридора
-def addHall():
-    graph[hall_name.get()].append(room_name.get())
-    graph[room_name.get()].append(hall_name.get())
-    hall_name.set("")
 
 
 tk = Tk()
@@ -165,23 +158,14 @@ for x in range(count):  # по размеру списка
     list1.remove(extender[x])  # удалить одинаковый
     graph[extender[x]] = list1
     list1 = []
-del list1
 extender = []
 # конец костыля!
 
 # кнопки для аудиторий
 addNewRoom = Button(tk, text="Добавить аудиторию", command=add_new_room, font=("Times New Roman", 16))
 addNewRoom.place(x=tk.winfo_screenwidth() / 2, y=image.height() + 2)
-"""
-addNewRoomExit = Button(tk, text="Завершить", command=exit_anr, font=("Times New Roman", 16))
-addNewRoomExit.place(x=tk.winfo_screenwidth() / 2, y=image.height() + 55)
+addNewHallExit = Button(tk, text="Завершить добавление аудитории", command=exit_anr, font=("Times New Roman", 16))
+addNewHallExit.place(x=tk.winfo_screenwidth() / 2, y=image.height() + 43)
 ExitRooms = Button(tk, text="Загрузить аудитории", command=load_rooms, font=("Times New Roman", 16))
-ExitRooms.place(x=tk.winfo_screenwidth() / 2 - 98, y=image.height() + 95)
-# костыль для смежных коридоров
-hall_name = StringVar()
-canvas.create_text(tk.winfo_screenwidth() / 2 + 225, image.height() + 10, text="Смежный коридор",
-                   font=("Times New Roman", 16))
-text = Entry(tk, width=8, font=("Times New Roman", 16), bd=3, bg="#bbbbbb", justify=CENTER, textvariable=hall_name)
-text.place(x=tk.winfo_screenwidth() / 2 + 180, y=image.height() + 25)
-"""
+ExitRooms.place(x=tk.winfo_screenwidth() / 2, y=image.height() + 84)
 tk.mainloop()
