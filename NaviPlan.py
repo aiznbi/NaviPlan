@@ -1,8 +1,6 @@
 import json
 import tkinter.messagebox as mb
 import tkinter.simpledialog as dg
-from os import rename
-import tkinter.filedialog as fd
 from tkinter import *
 from PIL import ImageTk
 
