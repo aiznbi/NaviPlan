@@ -1,6 +1,8 @@
 import json
 import tkinter.messagebox as mb
 import tkinter.simpledialog as dg
+from os import rename
+import tkinter.filedialog as fd
 from tkinter import *
 from PIL import ImageTk
 
@@ -12,6 +14,7 @@ buttons_dict = {}
 cords = []
 # лист ребер для json
 edge = {}
+global main_name
 global butt
 global i, j
 global hall_name, room_name
@@ -128,10 +131,12 @@ def load_rooms():
 
 
 tk = Tk()
+global main_name
+main_name = dg.askstring(title='Название', prompt='Введите название плана здания. Это название будет использованно системой для сохранения плана')
 # загрузка img
 canvas = Canvas(tk, width=tk.winfo_screenwidth(), height=tk.winfo_screenheight(), bg='white')
 canvas.pack(expand=YES, fill=BOTH)
-image = ImageTk.PhotoImage(file="plan.gif")
+image = ImageTk.PhotoImage(file=main_name+'.gif')
 point_img = round(tk.winfo_screenwidth() / 2 - image.width() / 2)
 canvas.create_image(tk.winfo_screenwidth() / 2 - image.width() / 2, 0, image=image, anchor=NW)
 canvas.create_line(0, image.height(), tk.winfo_screenwidth(), image.height())
@@ -184,8 +189,7 @@ def save_file():
     with open("vertex.json", "r") as read_file:
         vertex = json.load(read_file)
     save_dict = {'graph': graph, 'edges': edges, 'vertex': vertex}
-    file_name = dg.askstring(title='Сохранение файла', prompt='Введите название файла для сохранения')
-    with open(file_name + '.json', "w") as write_file:
+    with open(main_name + '.json', "w") as write_file:
         json.dump(save_dict, write_file)
 
 
