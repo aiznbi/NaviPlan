@@ -12,6 +12,7 @@ buttons_dict = {}
 cords = []
 # лист ребер для json
 edge = {}
+global butt
 global i, j
 global hall_name, room_name
 i = 0
@@ -53,12 +54,21 @@ def exit_anh():
 def exit_anr():
     exitANR = mb.askokcancel(title="Операция завершена",
                              message="Аудитория добавлена")
+    if exitANR:
+        global butt
+        butt['bg'] = 'pink'
+        butt['fg'] = 'black'
+        for but in buttons_dict:
+            buttons_dict[but]['bg'] = "lightblue"
+            buttons_dict[but]['fg'] = "black"
 
 
 def widname(txt):
     global room_name
     graph[txt].append(room_name)
     graph[room_name].append(txt)
+    buttons_dict[txt]['bg'] = "blue"
+    buttons_dict[txt]['fg'] = "white"
 
 
 # загрузка коридоров в json
@@ -72,6 +82,7 @@ def load_halls():
         for hall in edge:
             buttons_dict[hall] = Button(tk, text=hall, font=("Times New Roman", 14))
             buttons_dict[hall]['command'] = lambda txt=hall: widname(txt)
+            buttons_dict[hall]['bg'] = "lightblue"
             buttons_dict[hall].place(x=edge[hall][0] + point_img - 15, y=edge[hall][1] - 15)
     edge.clear()
 
@@ -99,7 +110,9 @@ def on_click_room(event):
     canvas.bind("<Button-1>", NONE)
     canvas.create_oval(mouse_x - 10, mouse_y - 10, mouse_x + 10, mouse_y + 10, fill="red", width=2)
     roomname()
-    global room_name
+    global room_name, butt
+    butt = Button(tk, text=room_name, font=("Times New Roman", 16), bg='red', fg='white')
+    butt.place(x=mouse_x-15, y=mouse_y-15)
     graph[room_name] = []
     edge[room_name] = cords
 
