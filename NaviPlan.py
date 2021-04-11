@@ -1,6 +1,7 @@
 import json
 import tkinter.messagebox as mb
 import tkinter.simpledialog as dg
+import tkinter.filedialog as fd
 from tkinter import *
 from PIL import ImageTk
 
@@ -173,6 +174,28 @@ for x in range(count):  # по размеру списка
 extender = []
 # конец костыля!
 
+
+def save_file():
+    with open("graph.json", "r") as read_file:
+        graph = json.load(read_file)
+    with open("edges.json", "r") as read_file:
+        edges = json.load(read_file)
+    with open("vertex.json", "r") as read_file:
+        vertex = json.load(read_file)
+    save_dict = {}
+    save_dict['graph'] = graph
+    save_dict['edges'] = edges
+    save_dict['vertex'] = vertex
+    strings = []
+    for key, item in save_dict.items():
+        strings.append("{}: {}".format(key, item))
+    res = "; ".join(strings)
+    file_name = fd.asksaveasfilename(title="Сохранить план", filetypes=(('JSON files', '*.json'),), defaultextension='.json')
+    file = open(file_name, 'w')
+    file.write(res)
+    file.close()
+
+
 # кнопки для аудиторий
 addNewRoom = Button(tk, text="Добавить аудиторию", command=add_new_room, font=("Times New Roman", 16))
 addNewRoom.place(x=tk.winfo_screenwidth() / 2, y=image.height() + 2)
@@ -180,4 +203,7 @@ addNewHallExit = Button(tk, text="Завершить добавление ауд
 addNewHallExit.place(x=tk.winfo_screenwidth() / 2, y=image.height() + 43)
 ExitRooms = Button(tk, text="Загрузить аудитории", command=load_rooms, font=("Times New Roman", 16))
 ExitRooms.place(x=tk.winfo_screenwidth() / 2, y=image.height() + 84)
+# кнопка сохранения
+savefile = Button(tk, text="Сохранить внесенный план", command=save_file, font=("Times New Roman", 16))
+savefile.place(x=tk.winfo_screenwidth() / 2, y=image.height() + 150)
 tk.mainloop()
