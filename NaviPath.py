@@ -4,6 +4,8 @@ from tkinter import *
 import copy
 from PIL import ImageTk
 
+way = []
+
 
 def bfs_paths(graph, start, goal):
     queue = deque([(start, [start])])
@@ -21,9 +23,6 @@ def shortest_path(graph, start, goal):
         return next(bfs_paths(graph, start, goal))
     except StopIteration:
         return None
-
-
-way = []
 
 
 def root(mas):

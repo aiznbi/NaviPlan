@@ -129,7 +129,6 @@ addNewHallExit = Button(tk, text="Завершить добавление кор
 addNewHallExit.place(x=tk.winfo_screenwidth() / 4, y=image.height() + 43)
 ExitHalls = Button(tk, text="Загрузить коридоры", command=load_halls, font=("Times New Roman", 16))
 ExitHalls.place(x=tk.winfo_screenwidth() / 4, y=image.height() + 84)
-
 # выгрузка коридоров
 with open("edges.json", "r") as read_file:
     edges = json.load(read_file)
