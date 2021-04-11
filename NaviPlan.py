@@ -1,7 +1,6 @@
 import json
 import tkinter.messagebox as mb
 import tkinter.simpledialog as dg
-import tkinter.filedialog as fd
 from tkinter import *
 from PIL import ImageTk
 
@@ -113,7 +112,7 @@ def on_click_room(event):
     roomname()
     global room_name, butt
     butt = Button(tk, text=room_name, font=("Times New Roman", 16), bg='red', fg='white')
-    butt.place(x=mouse_x-15, y=mouse_y-15)
+    butt.place(x=mouse_x - 15, y=mouse_y - 15)
     graph[room_name] = []
     edge[room_name] = cords
 
@@ -172,6 +171,8 @@ for x in range(count):  # по размеру списка
     graph[extender[x]] = list1
     list1 = []
 extender = []
+
+
 # конец костыля!
 
 
@@ -182,18 +183,10 @@ def save_file():
         edges = json.load(read_file)
     with open("vertex.json", "r") as read_file:
         vertex = json.load(read_file)
-    save_dict = {}
-    save_dict['graph'] = graph
-    save_dict['edges'] = edges
-    save_dict['vertex'] = vertex
-    strings = []
-    for key, item in save_dict.items():
-        strings.append("{}: {}".format(key, item))
-    res = "; ".join(strings)
-    file_name = fd.asksaveasfilename(title="Сохранить план", filetypes=(('JSON files', '*.json'),), defaultextension='.json')
-    file = open(file_name, 'w')
-    file.write(res)
-    file.close()
+    save_dict = {'graph': graph, 'edges': edges, 'vertex': vertex}
+    file_name = dg.askstring(title='Сохранение файла', prompt='Введите название файла для сохранения')
+    with open(file_name + '.json', "w") as write_file:
+        json.dump(save_dict, write_file)
 
 
 # кнопки для аудиторий
