@@ -33,7 +33,6 @@ def root(mas):
     vertex_cop = copy.deepcopy(vertex)
     edges_cop = copy.deepcopy(edges)
     path = shortest_path(graph, mas[0], mas[1])
-    print(path)
     way.clear()
     for i in path:
         if edges_cop.get(i) is None:

@@ -9,11 +9,8 @@ cords = []
 graph = {}
 buttons_dict = {}
 edge = {}
-
-global file_name
-global butt
-global i, j
-global hall_name, room_name
+global file_name, butt, i, j, room_name, hall, flag_hall_room, count, hall1, hall2
+flag_hall_room = False
 i = 0
 j = 0
 
@@ -62,21 +59,48 @@ def exit_anr():
             buttons_dict[but]['fg'] = "black"
 
 
+# лямбда на коридорные кнопки
 def widname(txt):
-    global room_name
-    graph[txt].append(room_name)
-    graph[room_name].append(txt)
-    buttons_dict[txt]['bg'] = "blue"
-    buttons_dict[txt]['fg'] = "white"
-
+    global flag_hall_room, count
+    if flag_hall_room:
+        global room_name
+        graph[txt].append(room_name)
+        graph[room_name].append(txt)
+        buttons_dict[txt]['bg'] = "blue"
+        buttons_dict[txt]['fg'] = "white"
+        flag_hall_room = False
+    else:
+        global hall1, hall2
+        if count == 0:
+            hall1 = txt
+            buttons_dict[hall1]['bg'] = "blue"
+            buttons_dict[hall1]['fg'] = "white"
+            count += 1
+        elif count == 1:
+            hall2 = txt
+            buttons_dict[hall2]['bg'] = "blue"
+            buttons_dict[hall2]['fg'] = "white"
+            count += 1
+            ask = mb.askyesno(title="Стык коридоров", message="Все верно?")
+            if ask:
+                graph[hall1].append(hall2)
+                graph[hall2].append(hall1)
+                buttons_dict[hall1]['bg'] = "lightblue"
+                buttons_dict[hall1]['fg'] = "black"
+                buttons_dict[hall2]['bg'] = "lightblue"
+                buttons_dict[hall2]['fg'] = "black"
+                count = 0
+                mb.showinfo(title="Стык коридоров", message="Успешно")
+            else:
+                buttons_dict[hall1]['bg'] = "lightblue"
+                buttons_dict[hall1]['fg'] = "black"
+                buttons_dict[hall2]['bg'] = "lightblue"
+                buttons_dict[hall2]['fg'] = "black"
+                mb.showwarning(title="Стык коридоров", message="Заново")
 
 # загрузка коридоров в json
-def load_halls():
+def show_halls():
     extender = []
-    with open("edges.json", "w") as write_file:
-        json.dump(edge, write_file)
-    exitHalls = mb.showinfo(title="Операция завершена",
-                               message="Коридоры загружены")
     for hall in edge:
         buttons_dict[hall] = Button(tk, text="*", font=("Times New Roman", 14))
         buttons_dict[hall]['command'] = lambda txt=hall: widname(txt)
@@ -84,13 +108,13 @@ def load_halls():
         buttons_dict[hall].place(x=edge[hall][0] + point_img - 15, y=edge[hall][1] - 15)
     # цикл смежности коридоров
     i = 1
-    count = 0
+    cnt = 0
     for hall in edge:
         if int(hall[1:2]) == i:
             extender.append(hall)
-            count += 1
+            cnt += 1
         else:
-            for x in range(count):  # по размеру списка
+            for x in range(cnt):  # по размеру списка
                 list1 = extender.copy()  # копия списка
                 list1.remove(extender[x])  # удалить одинаковый
                 graph[extender[x]] = list1
@@ -98,28 +122,43 @@ def load_halls():
             extender.clear()
             extender.append(hall)
             i += 1
-            count = 1
+            cnt = 1
     # костыль!
-    for x in range(count):  # по размеру списка
+    for x in range(cnt):  # по размеру списка
         list1 = extender.copy()  # копия списка
         list1.remove(extender[x])  # удалить одинаковый
         graph[extender[x]] = list1
         list1 = []
     extender = []
+    with open("edges.json", "w") as write_file:
+        json.dump(edge, write_file)
+    mb.showinfo(title="Операция завершена", message="Коридоры загружены")
     # конец костыля!
     edge.clear()
+
+
+def hall_inter():
+    hallInter = mb.askokcancel(title="Стык коридоров",
+                               message="Выберите две пересекающиеся вершины коридоров")
+    if hallInter:
+        global count
+        count = 0
 
 
 # бинд клика на аудиторию
 def add_new_room():
     ANR = mb.askokcancel(title="Аудитория",
                          message="Выберите аудиторию, затем смежные коридоры")
+    global flag_hall_room
     if ANR:
+        flag_hall_room = True
         canvas.bind("<Button-1>", on_click_room)
     else:
+        flag_hall_room = False
         canvas.bind("<Button-1>", NONE)
 
 
+# название аудиториии
 def roomname():
     global room_name
     room_name = dg.askstring(title='Название аудитории', prompt='Введите название аудитории')
@@ -145,7 +184,7 @@ def load_rooms():
     with open("vertex.json", "w") as write_file:
         json.dump(edge, write_file)
     exitHalls = mb.showinfo(title="Операция завершена",
-                               message="Аудитории загружены")
+                            message="Аудитории загружены")
     with open("graph.json", 'w') as write_file:
         json.dump(graph, write_file)
 
@@ -153,11 +192,11 @@ def load_rooms():
 tk = Tk()
 global file_name
 file_name = fd.askopenfile(filetypes=(('image', '*.gif'),))
-file_name = file_name.name[file_name.name.rfind('/')+1:file_name.name.rfind('.')]
+file_name = file_name.name[file_name.name.rfind('/') + 1:file_name.name.rfind('.')]
 # загрузка img
 canvas = Canvas(tk, width=tk.winfo_screenwidth(), height=tk.winfo_screenheight(), bg='white')
 canvas.pack(expand=YES, fill=BOTH)
-image = ImageTk.PhotoImage(file=file_name+'.gif')
+image = ImageTk.PhotoImage(file=file_name + '.gif')
 point_img = round(tk.winfo_screenwidth() / 2 - image.width() / 2)
 canvas.create_image(tk.winfo_screenwidth() / 2 - image.width() / 2, 0, image=image, anchor=NW)
 canvas.create_line(0, image.height(), tk.winfo_screenwidth(), image.height())
@@ -166,8 +205,10 @@ addNewHall = Button(tk, text="Добавить коридор", command=add_new_
 addNewHall.place(x=tk.winfo_screenwidth() / 4, y=image.height() + 2)
 addNewHallExit = Button(tk, text="Завершить добавление коридора", command=exit_anh, font=("Times New Roman", 16))
 addNewHallExit.place(x=tk.winfo_screenwidth() / 4, y=image.height() + 43)
-ExitHalls = Button(tk, text="Загрузить коридоры", command=load_halls, font=("Times New Roman", 16))
+ExitHalls = Button(tk, text="Показать коридоры", command=show_halls, font=("Times New Roman", 16))
 ExitHalls.place(x=tk.winfo_screenwidth() / 4, y=image.height() + 84)
+HallIntersection = Button(tk, text="Добавить смежные коридоры", command=hall_inter, font=("Times New Roman", 16))
+HallIntersection.place(x=tk.winfo_screenwidth() / 4, y=image.height() + 125)
 
 
 def save_file():
