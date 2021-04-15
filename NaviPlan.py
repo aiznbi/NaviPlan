@@ -1,18 +1,16 @@
 import json
 import tkinter.messagebox as mb
 import tkinter.simpledialog as dg
+import tkinter.filedialog as fd
 from tkinter import *
 from PIL import ImageTk
 
-graph = {}
-extender = []
-buttons_dict = {}
-
-# лист пары координат точки
 cords = []
-# лист ребер для json
+graph = {}
+buttons_dict = {}
 edge = {}
-global main_name
+
+global file_name
 global butt
 global i, j
 global hall_name, room_name
@@ -74,17 +72,41 @@ def widname(txt):
 
 # загрузка коридоров в json
 def load_halls():
+    extender = []
     with open("edges.json", "w") as write_file:
         json.dump(edge, write_file)
-    exitHalls = mb.askokcancel(title="Операция завершена",
+    exitHalls = mb.showinfo(title="Операция завершена",
                                message="Коридоры загружены")
-    if exitHalls:
-        # кнопки коридоров
-        for hall in edge:
-            buttons_dict[hall] = Button(tk, text=hall, font=("Times New Roman", 14))
-            buttons_dict[hall]['command'] = lambda txt=hall: widname(txt)
-            buttons_dict[hall]['bg'] = "lightblue"
-            buttons_dict[hall].place(x=edge[hall][0] + point_img - 15, y=edge[hall][1] - 15)
+    for hall in edge:
+        buttons_dict[hall] = Button(tk, text="*", font=("Times New Roman", 14))
+        buttons_dict[hall]['command'] = lambda txt=hall: widname(txt)
+        buttons_dict[hall]['bg'] = "lightblue"
+        buttons_dict[hall].place(x=edge[hall][0] + point_img - 15, y=edge[hall][1] - 15)
+    # цикл смежности коридоров
+    i = 1
+    count = 0
+    for hall in edge:
+        if int(hall[1:2]) == i:
+            extender.append(hall)
+            count += 1
+        else:
+            for x in range(count):  # по размеру списка
+                list1 = extender.copy()  # копия списка
+                list1.remove(extender[x])  # удалить одинаковый
+                graph[extender[x]] = list1
+                list1 = []  # очистка памяти и списка
+            extender.clear()
+            extender.append(hall)
+            i += 1
+            count = 1
+    # костыль!
+    for x in range(count):  # по размеру списка
+        list1 = extender.copy()  # копия списка
+        list1.remove(extender[x])  # удалить одинаковый
+        graph[extender[x]] = list1
+        list1 = []
+    extender = []
+    # конец костыля!
     edge.clear()
 
 
@@ -122,19 +144,20 @@ def on_click_room(event):
 def load_rooms():
     with open("vertex.json", "w") as write_file:
         json.dump(edge, write_file)
-    exitHalls = mb.askokcancel(title="Операция завершена",
+    exitHalls = mb.showinfo(title="Операция завершена",
                                message="Аудитории загружены")
     with open("graph.json", 'w') as write_file:
         json.dump(graph, write_file)
 
 
 tk = Tk()
-global main_name
-main_name = dg.askstring(title='Название', prompt='Введите название плана здания. Это название будет использованно системой для сохранения плана')
+global file_name
+file_name = fd.askopenfile(filetypes=(('image', '*.gif'),))
+file_name = file_name.name[file_name.name.rfind('/')+1:file_name.name.rfind('.')]
 # загрузка img
 canvas = Canvas(tk, width=tk.winfo_screenwidth(), height=tk.winfo_screenheight(), bg='white')
 canvas.pack(expand=YES, fill=BOTH)
-image = ImageTk.PhotoImage(file=main_name+'.gif')
+image = ImageTk.PhotoImage(file=file_name+'.gif')
 point_img = round(tk.winfo_screenwidth() / 2 - image.width() / 2)
 canvas.create_image(tk.winfo_screenwidth() / 2 - image.width() / 2, 0, image=image, anchor=NW)
 canvas.create_line(0, image.height(), tk.winfo_screenwidth(), image.height())
@@ -145,41 +168,10 @@ addNewHallExit = Button(tk, text="Завершить добавление кор
 addNewHallExit.place(x=tk.winfo_screenwidth() / 4, y=image.height() + 43)
 ExitHalls = Button(tk, text="Загрузить коридоры", command=load_halls, font=("Times New Roman", 16))
 ExitHalls.place(x=tk.winfo_screenwidth() / 4, y=image.height() + 84)
-# выгрузка коридоров
-with open("edges.json", "r") as read_file:
-    edges = json.load(read_file)
-
-# цикл смежности коридоров
-i = 1
-count = 0
-for hall in edges:
-    if int(hall[1:2]) == i:
-        extender.append(hall)
-        count += 1
-    else:
-        for x in range(count):  # по размеру списка
-            list1 = extender.copy()  # копия списка
-            list1.remove(extender[x])  # удалить одинаковый
-            graph[extender[x]] = list1
-            list1 = []  # очистка памяти и списка
-        extender.clear()
-        extender.append(hall)
-        i += 1
-        count = 1
-
-# костыль!
-for x in range(count):  # по размеру списка
-    list1 = extender.copy()  # копия списка
-    list1.remove(extender[x])  # удалить одинаковый
-    graph[extender[x]] = list1
-    list1 = []
-extender = []
-
-
-# конец костыля!
 
 
 def save_file():
+    emp = {}
     with open("graph.json", "r") as read_file:
         graph = json.load(read_file)
     with open("edges.json", "r") as read_file:
@@ -187,8 +179,15 @@ def save_file():
     with open("vertex.json", "r") as read_file:
         vertex = json.load(read_file)
     save_dict = {'graph': graph, 'edges': edges, 'vertex': vertex}
-    with open(main_name + '.json', "w") as write_file:
+    with open(file_name + '.json', "w") as write_file:
         json.dump(save_dict, write_file)
+    with open("graph.json", "w") as write_file:
+        json.dump(emp, write_file)
+    with open("edges.json", "w") as write_file:
+        json.dump(emp, write_file)
+    with open("vertex.json", "w") as write_file:
+        json.dump(emp, write_file)
+    mb.showinfo(title="Операция завершена", message="План успешно добавлен!")
 
 
 # кнопки для аудиторий
