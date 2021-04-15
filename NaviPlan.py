@@ -10,6 +10,7 @@ graph = {}
 buttons_dict = {}
 edge = {}
 global file_name, butt, i, j, room_name, hall, flag_hall_room, count, hall1, hall2
+count = 0
 flag_hall_room = False
 i = 0
 j = 0
@@ -51,7 +52,8 @@ def exit_anr():
     exitANR = mb.askokcancel(title="Операция завершена",
                              message="Аудитория добавлена")
     if exitANR:
-        global butt
+        global butt, flag_hall_room
+        flag_hall_room = False
         butt['bg'] = 'pink'
         butt['fg'] = 'black'
         for but in buttons_dict:
@@ -68,7 +70,6 @@ def widname(txt):
         graph[room_name].append(txt)
         buttons_dict[txt]['bg'] = "blue"
         buttons_dict[txt]['fg'] = "white"
-        flag_hall_room = False
     else:
         global hall1, hall2
         if count == 0:
